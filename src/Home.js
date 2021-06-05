@@ -79,17 +79,30 @@ const loadPokemons = async () =>
 export default function Home() {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
+    let pokemonInfo = {};
     
-    const getPokemonInfo = async (id) => {
-        await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
-        .then(res => (res.ok ? res : Promise.reject(res)))
-        .then(res => res.json())
-    }
     const handleClickOpen = (event) => {
-        console.log("ID ", event.currentTarget.id)
-        const d = getPokemonInfo(event.currentTarget.id);
-        
-        setOpen(true);
+        const id = event.currentTarget.id
+        fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+        .then(response => response.json())
+        .then((responseJson)=> {
+            pokemonInfo.baseExp = responseJson.base_experience;
+            pokemonInfo.weight = responseJson.weight;
+            pokemonInfo.height = responseJson.height;
+            responseJson.types.forEach(element => {
+                pokemonInfo.types = element.type.name
+            });
+            responseJson.abilities.forEach(element => {
+                if (pokemonInfo.abilities !== null) {
+                    pokemonInfo.abilities += `, ${element.ability.name}`;
+                } else {
+                    pokemonInfo.abilities = element.ability.name
+                }
+            });
+            console.log('INFO', pokemonInfo);
+            setOpen(true);
+        })
+       
     };
 
     const handleClose = () => {
@@ -191,6 +204,7 @@ export default function Home() {
                             <DialogContent>
                                 <DialogContentText id="alert-dialog-description">
                                     
+                                    Height: {pokemonInfo}
                             </DialogContentText>
                             </DialogContent>
                             <DialogActions>
