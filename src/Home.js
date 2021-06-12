@@ -74,13 +74,17 @@ const loadPokemons = async () =>
         .then(res => {
             return res.json()
         })
-
+        // useEffect(() => {
+        //     fetch('https://jsonplaceholder.typicode.com/posts')
+        //     .then(response => response.json())
+        //     .then(data => setApiData(data))
+        //   }, []);
 
 export default function Home() {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     let pokemonInfo = {};
-    
+
     const handleClickOpen = (event) => {
         const id = event.currentTarget.id
         fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
@@ -102,7 +106,6 @@ export default function Home() {
             console.log('INFO', pokemonInfo);
             setOpen(true);
         })
-       
     };
 
     const handleClose = () => {
@@ -112,7 +115,7 @@ export default function Home() {
     if (isLoading) return "Loading..."
     if (error) return `Something went wrong: ${error.message}`
     if (data)
-    
+
     data.results.forEach(element => {
         element.id = element.url.split("/")[6];
     });

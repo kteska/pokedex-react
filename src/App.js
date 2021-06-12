@@ -6,7 +6,9 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import Home from './Home';
+//import Home from './Home';
+import PokemonList from './PokemonList';
+
 function App() {
   return (
     <div className="App">
@@ -28,7 +30,7 @@ function App() {
     <Router>
       {/* <Link to="/">Home</Link> */}
       {/* <Link to="/search">Search</Link> */}
-      <Route path="/" component={Home} />
+      <Route path="/" component={PokemonList} />
       {/* <Route path="/search" component={Search} /> */}
     </Router>
   </section>
