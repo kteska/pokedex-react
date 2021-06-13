@@ -156,14 +156,22 @@ function PokemonList() {
     const classes = useStyles();
     const [pokemons, setPokemons] = useState([]);
     const [page, setPage] = useState(1);
+    const [offset, setOffset] = useState(0);
 
     const handlePageChange = (event, value) => {
+        if (page < value) {
+            let nextOffset = offset + 6;
+            setOffset(nextOffset)
+        } else {
+            let prevOffset = offset - 6;
+            setOffset(prevOffset);
+        }
         setPage(value);
         console.log('val', value);
     }
 
     const getPokemons = async () => {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=20&limit=9`)
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=6`)
         const data = await response.json();
         data.results.forEach(element => {
             element.id = element.url.split("/")[6];
@@ -174,7 +182,7 @@ function PokemonList() {
 
     useEffect(() => {
         getPokemons()
-    }, []);
+    }, [page]);
 
     return (
         <div className="App">
