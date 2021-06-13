@@ -57,10 +57,9 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(6),
     },
     pagination: {
-        marginTop: '40px',
+        marginTop: '18px',
         justifyContent: "center",
         display: 'flex',
-        backgroundColor: 'white',
         padding: '12px',
         width: '102%'
     }
@@ -101,7 +100,7 @@ function PokemonList() {
     return (
         <div className="App">
             <Container className={classes.cardGrid} maxWidth="md">
-                <Grid container spacing={8}>
+                <Grid container spacing={4}>
                     {pokemons.map((pokemon) => (
                         <Grid item key={pokemon.key} xs={12} sm={6} md={4}>
                             <PokemonCard pokemonKey={pokemon.key} id={pokemon.id} name={pokemon.name} />
@@ -110,7 +109,7 @@ function PokemonList() {
                 </Grid>
                 <Pagination
                     count={10}
-                    color="secondary"
+                    color="primary"
                     className={classes.pagination}
                     page={page}
                     onChange={handlePageChange}
