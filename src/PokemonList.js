@@ -1,7 +1,5 @@
-//import logo from './logo.svg';
 import './App.css';
 import PropTypes, { elementType } from 'prop-types';
-// hook use-...
 import { useState, useEffect } from 'react';
 import React from 'react';
 import Button from '@material-ui/core/Button';
@@ -11,67 +9,84 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { makeStyles } from '@material-ui/core/styles';
 
 
-const PokemonCard = ({ id, name }) => {
+const PokemonCard = ({ id, name, key }) => {
+    const classes = useStyles();
+    const [pokemon, setPokemon] = useState([]);
+    const [dialog, setDialog] = useState(false);
+
+    const getPokemonInfo = async (id) => {
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+        const data = await response.json();
+        console.log(data);
+        setPokemon(data);
+    }
+
+    const handleSelectClick = (event) => {
+        console.log(event.currentTarget.id)
+        getPokemonInfo(event.currentTarget.id)
+        setDialog(true);
+    }
+
+    const handleClose = () => {
+        setDialog(false);
+    }
+
     return (
         <div>
-            <Card>
+            <Card className={classes.card} key={key}>
                 <CardMedia
+                    className={classes.cardMedia}
                     image={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`}
                 />
-                <CardContent>
+                <CardContent className={classes.cardContent}>
                     <Typography gutterBottom variant="h5" component="h2">
                         {name}
                     </Typography>
                     <Typography>
-                        This is a media card. You can use this section to describe the content.
+                        {id}
                     </Typography>
                 </CardContent>
                 <CardActions>
-                    <Button size="small" color="primary" id={id}>
+                    <Button size="small" color="primary" id={id} onClick={handleSelectClick}>
                         View
                     </Button>
                 </CardActions>
             </Card>
+            <Dialog
+                open={dialog}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Height: {pokemon.height}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Disagree
+                    </Button>
+                    <Button onClick={handleClose} color="primary" autoFocus>
+                        Agree
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     );
 }
 
-// Card.defaultProps = {
-//     description: 'Brak opisu'
-// }
 
-// walidacja czy parametry zostaly przekazane w trybie developerskim
-Card.propTypes = {
-    name: PropTypes.string.isRequired,
-}
-
-const offers = [
-    {
-        id: 1,
-        name: "Pokoje gościnne",
-        address: "Zakopiańska, Wrocław",
-        description: "Przykładowy opis",
-        country: "Polska",
-        cover: "https://picsum.photos/400"
-    },
-    {
-        id: 2,
-        name: "Hotel Kazimierz",
-        address: "Lubelska, Kraków",
-        country: "Polska",
-        cover: "https://picsum.photos/400"
-    },
-    {
-        id: 3,
-        name: "Hostel pod górami",
-        address: "Górska, Zakopane",
-        country: "Polska",
-        cover: "https://picsum.photos/400"
-    }
-
-]
 const useStyles = makeStyles((theme) => ({
     icon: {
         marginRight: theme.spacing(2),
@@ -105,79 +120,34 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function PokemonList() {
-    
-
-    //const selectedOffer = '';
-
-    //const [selectedOffer, setSelectedOffer] = useState('Cozy flat');
-    const [apiData, setApiData] = useState([]);
-    /**
-     * useState
-     * 0 - variable
-     * 1 - callback
-     */
-
-
-    // useEffect(() => {
-    //     setSelectedOffer('???')
-    // }, []);
-    /**
-     * useEffect
-     * 0 - callback
-     * 1 - tablica zaleznosci
-     */
+    const classes = useStyles();
+    const [pokemons, setPokemons] = useState([]);
+    const getPokemons = async () => {
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?offset=20&limit=9`)
+        const data = await response.json();
+        data.results.forEach(element => {
+            element.id = element.url.split("/")[6];
+        });
+        setPokemons(data.results);
+    }
 
     useEffect(() => {
-        fetch('https://pokeapi.co/api/v2/pokemon?offset=20&limit=9')
-            .then(response => response.json())
-            .then(data => {
-                setApiData(data.results)
-            })
+        getPokemons()
     }, []);
 
     return (
         <div className="App">
-
-            {apiData.map((elem) =>
-                <PokemonCard
-                    key={`offer-${elem.id}`}
-                    //offerObj={elem}
-                    name={elem.name}
-                    id={elem.id}
-                />
-            )}
-
-
             <Container className={classes.cardGrid} maxWidth="md">
-                {/* End hero unit */}
                 <Grid container spacing={4}>
-                    {apiData.results.map((pok) => (
-                        <Grid item key={pok.id} xs={12} sm={6} md={4}>
-                            <Card className={classes.card}>
-                                <CardMedia
-                                    className={classes.cardMedia}
-                                    image={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pok.id}.png`}
-                                />
-                                <CardContent className={classes.cardContent}>
-                                    <Typography gutterBottom variant="h5" component="h2">
-                                        {pok.name}
-                                    </Typography>
-                                    <Typography>
-                                        This is a media card. You can use this section to describe the content.
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <Button size="small" color="primary" id={pok.id} onClick={handleClickOpen}>
-                                        View
-                                    </Button>
-                                </CardActions>
-                            </Card>
+                    {pokemons.map((pokemon) => (
+                        <Grid item key={pokemon.key} xs={12} sm={6} md={4}>
+                            <PokemonCard key={pokemon.key} id={pokemon.id} name={pokemon.name} />
                         </Grid>
                     ))}
                 </Grid>
-                </Container>
+            </Container>
         </div>
-            );
+    );
 }
 
-            export default PokemonList;
+export default PokemonList;

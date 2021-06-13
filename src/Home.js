@@ -206,7 +206,6 @@ export default function Home() {
                             <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
                             <DialogContent>
                                 <DialogContentText id="alert-dialog-description">
-                                    
                                     Height: {pokemonInfo}
                             </DialogContentText>
                             </DialogContent>
